@@ -19,29 +19,34 @@ class ViewController: UIViewController {
         setupSearchBar()
         
         let urlString = "https://itunes.apple.com/search?term=jack+johnson&limit=25"
-        request(urlString: urlString) { searchResponce, error in
-            searchResponce?.results.map({ track in
-                print(track.trackName)
-            })
+        request(urlString: urlString) { result in
+            switch result {
+            case .success(let searchResponce):
+                searchResponce.results.map { track in
+                    print(track.trackName)
+                }
+            case .failure(let error):
+                print(error)
+            }
         }
     }
     
-    func request(urlString: String, completion: @escaping (SearchResponce?, Error?) -> Void) {
+    func request(urlString: String, completion: @escaping (Result<SearchResponce, Error>) -> Void) {
         guard let url = URL(string: urlString) else { return }
         URLSession.shared.dataTask(with: url) { data, responce, error in
             DispatchQueue.main.async {
                 if let error = error {
                     print("Some error")
-                    completion(nil, error)
+                    completion(.failure(error))
                     return
                 }
                 guard let data = data else { return }
                 do {
                     let tracks = try JSONDecoder().decode(SearchResponce.self, from: data)
-                    completion(tracks, nil)
+                    completion(.success(tracks))
                 } catch let jsonError {
                     print("Failed to decode Json", jsonError)
-                    completion(nil, jsonError)
+                    completion(.failure(jsonError))
                 }
             }
         }.resume()
