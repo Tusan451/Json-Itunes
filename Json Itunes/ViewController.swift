@@ -17,6 +17,20 @@ class ViewController: UIViewController {
         
         setupTableView()
         setupSearchBar()
+        
+        let urlString = "https://itunes.apple.com/search?term=jack+johnson&limit=25"
+        guard let url = URL(string: urlString) else { return }
+        URLSession.shared.dataTask(with: url) { data, responce, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("Some error")
+                    return
+                }
+                guard let data = data else { return }
+                let someString = String(data: data, encoding: .utf8)
+                print(someString ?? "no data")
+            }
+        }.resume()
     }
     
     private func setupSearchBar() {
