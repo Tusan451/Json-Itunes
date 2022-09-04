@@ -8,7 +8,7 @@
 import Foundation
 
 class NetworkService {
-    func request(urlString: String, completion: @escaping (Result<SearchResponce, Error>) -> Void) {
+    func request(urlString: String, completion: @escaping (Result<Data, Error>) -> Void) {
         guard let url = URL(string: urlString) else { return }
         URLSession.shared.dataTask(with: url) { data, responce, error in
             DispatchQueue.main.async {
@@ -18,13 +18,7 @@ class NetworkService {
                     return
                 }
                 guard let data = data else { return }
-                do {
-                    let tracks = try JSONDecoder().decode(SearchResponce.self, from: data)
-                    completion(.success(tracks))
-                } catch let jsonError {
-                    print("Failed to decode Json", jsonError)
-                    completion(.failure(jsonError))
-                }
+                completion(.success(data))
             }
         }.resume()
     }
