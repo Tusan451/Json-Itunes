@@ -10,6 +10,7 @@ import UIKit
 class ViewController: UIViewController {
     
     let networkService = NetworkService()
+    var searchResponce: SearchResponce? = nil
 
     @IBOutlet var table: UITableView!
     let searchController = UISearchController(searchResultsController: nil)
@@ -20,14 +21,12 @@ class ViewController: UIViewController {
         setupTableView()
         setupSearchBar()
         
-        let urlString = "https://itunes.apple.com/search?term=jack+johnson&limit=25"
+        let urlString = "https://itunes.apple.com/search?term=jack+johnson&limit=5"
         
         networkService.request(urlString: urlString) { result in
             switch result {
             case .success(let searchResponce):
-                searchResponce.results.map { track in
-                    print(track.trackName)
-                }
+                self.searchResponce = searchResponce
             case .failure(let error):
                 print(error)
             }
@@ -51,13 +50,14 @@ class ViewController: UIViewController {
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return (searchResponce?.results.count)!
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = table.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let track = searchResponce?.results[indexPath.row]
         
-        cell.textLabel?.text = "123"
+        cell.textLabel?.text = track?.trackName
         return cell
     }
 }

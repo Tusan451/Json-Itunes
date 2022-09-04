@@ -67,10 +67,26 @@
 				E08C5E3F28C39C9700975B82 /* Assets.xcassets */,
 				E08C5E4128C39C9700975B82 /* LaunchScreen.storyboard */,
 				E08C5E4428C39C9700975B82 /* Info.plist */,
-				E08C5E4A28C3A8B600975B82 /* SearchResponce.swift */,
-				E0C87F9F28C4F2020011FEBC /* NetworkService.swift */,
+				E0C87FA128C4F3C60011FEBC /* Models */,
+				E0C87FA228C4F3D10011FEBC /* Networking */,
 			);
 			path = "Json Itunes";
+			sourceTree = "<group>";
+		};
+		E0C87FA128C4F3C60011FEBC /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E08C5E4A28C3A8B600975B82 /* SearchResponce.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		E0C87FA228C4F3D10011FEBC /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				E0C87F9F28C4F2020011FEBC /* NetworkService.swift */,
+			);
+			path = Networking;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
