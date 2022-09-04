@@ -20,17 +20,6 @@ class ViewController: UIViewController {
         
         setupTableView()
         setupSearchBar()
-        
-        let urlString = "https://itunes.apple.com/search?term=jack+johnson&limit=5"
-        
-        networkService.request(urlString: urlString) { result in
-            switch result {
-            case .success(let searchResponce):
-                self.searchResponce = searchResponce
-            case .failure(let error):
-                print(error)
-            }
-        }
     }
     
     private func setupSearchBar() {
@@ -50,7 +39,7 @@ class ViewController: UIViewController {
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (searchResponce?.results.count)!
+        return searchResponce?.results.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -65,7 +54,18 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
 extension ViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print(searchText)
+        
+        let urlString = "https://itunes.apple.com/search?term=\(searchText)&limit=5"
+        
+        networkService.request(urlString: urlString) { [weak self] result in
+            switch result {
+            case .success(let searchResponce):
+                self?.searchResponce = searchResponce
+                self?.table.reloadData()
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
 }
 
