@@ -8,6 +8,8 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    let networkService = NetworkService()
 
     @IBOutlet var table: UITableView!
     let searchController = UISearchController(searchResultsController: nil)
@@ -19,7 +21,8 @@ class ViewController: UIViewController {
         setupSearchBar()
         
         let urlString = "https://itunes.apple.com/search?term=jack+johnson&limit=25"
-        request(urlString: urlString) { result in
+        
+        networkService.request(urlString: urlString) { result in
             switch result {
             case .success(let searchResponce):
                 searchResponce.results.map { track in
@@ -29,27 +32,6 @@ class ViewController: UIViewController {
                 print(error)
             }
         }
-    }
-    
-    func request(urlString: String, completion: @escaping (Result<SearchResponce, Error>) -> Void) {
-        guard let url = URL(string: urlString) else { return }
-        URLSession.shared.dataTask(with: url) { data, responce, error in
-            DispatchQueue.main.async {
-                if let error = error {
-                    print("Some error")
-                    completion(.failure(error))
-                    return
-                }
-                guard let data = data else { return }
-                do {
-                    let tracks = try JSONDecoder().decode(SearchResponce.self, from: data)
-                    completion(.success(tracks))
-                } catch let jsonError {
-                    print("Failed to decode Json", jsonError)
-                    completion(.failure(jsonError))
-                }
-            }
-        }.resume()
     }
     
     private func setupSearchBar() {
